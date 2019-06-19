@@ -1,0 +1,1460 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"additionalProperties": false,
+	"definitions": {
+		"AnatomicEntityCharacteristic.1": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.1"
+					},
+					"type": "array"
+				},
+				"QuestionType": {
+					"$ref": "#/definitions/ValidTerm"
+				}
+			},
+			"required": [
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"id",
+				"itemNumber",
+				"minCardinality",
+				"annotatorConfidence"
+			],
+			"type": "object"
+		},
+		"CharacteristicQuantification.1": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"characteristicQuantificationIndex": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"name": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"Interval": {
+					"items": {
+						"$ref": "#/definitions/Interval"
+					},
+					"type": "array"
+				},
+				"NonQuantifiable": {
+					"items": {
+						"additionalProperties": false,
+						"properties": {
+							"codeMeaning": {
+								"$ref": "#/definitions/xs:string"
+							},
+							"codeValue": {
+								"$ref": "#/definitions/xs:string"
+							},
+							"codingSchemeDesignator": {
+								"$ref": "#/definitions/xs:string"
+							},
+							"codingSchemeVersion": {
+								"$ref": "#/definitions/xs:string"
+							},
+							"defaultAnswer": {
+								"$ref": "#/definitions/xs:boolean"
+							},
+							"nextId": {
+								"$ref": "#/definitions/UID"
+							},
+							"noMoreQuestions": {
+								"$ref": "#/definitions/xs:boolean"
+							},
+							"valueDescription": {
+								"$ref": "#/definitions/xs:string"
+							}
+						},
+						"required": [
+							"codeValue",
+							"codeMeaning",
+							"codingSchemeDesignator"
+						],
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"Numerical": {
+					"items": {
+						"$ref": "#/definitions/Numerical"
+					},
+					"type": "array"
+				},
+				"Quantile": {
+					"$ref": "#/definitions/Quantile"
+				},
+				"Scale": {
+					"$ref": "#/definitions/Scale"
+				}
+			},
+			"required": [
+				"annotatorConfidence",
+				"name",
+				"characteristicQuantificationIndex"
+			],
+			"type": "object"
+		},
+		"CodedTerm.1": {
+			"additionalProperties": false,
+			"properties": {
+				"algorithmName": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"algorithmVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"description": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"mathML": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"uniqueIdentifier": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"description",
+				"codeMeaning",
+				"codeValue",
+				"codingSchemeDesignator"
+			],
+			"type": "object"
+		},
+		"Component.1": {
+			"additionalProperties": false,
+			"properties": {
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.2"
+					},
+					"type": "array"
+				},
+				"AnatomicEntity": {
+					"additionalProperties": false,
+					"properties": {
+						"annotatorConfidence": {
+							"$ref": "#/definitions/xs:boolean"
+						},
+						"AnatomicEntityCharacteristic": {
+							"items": {
+								"$ref": "#/definitions/AnatomicEntityCharacteristic.1"
+							},
+							"type": "array"
+						},
+						"ImagingObservationCharacteristic": {
+							"items": {
+								"$ref": "#/definitions/ImagingObservationCharacteristic.1"
+							},
+							"type": "array"
+						}
+					},
+					"required": [
+						"annotatorConfidence"
+					],
+					"type": "object"
+				},
+				"Calculation": {
+					"additionalProperties": false,
+					"properties": {
+						"nextId": {
+							"$ref": "#/definitions/UID"
+						},
+						"noMoreQuestions": {
+							"$ref": "#/definitions/xs:boolean"
+						},
+						"CalculationType": {
+							"items": {
+								"$ref": "#/definitions/ValidTerm.3"
+							},
+							"minItems": 1,
+							"type": "array"
+						}
+					},
+					"required": [
+						"CalculationType"
+					],
+					"type": "object"
+				},
+				"GeometricShape": {
+					"$ref": "#/definitions/GeometricShape.1"
+				},
+				"ImagingObservation": {
+					"additionalProperties": false,
+					"properties": {
+						"annotatorConfidence": {
+							"$ref": "#/definitions/xs:boolean"
+						},
+						"ImagingObservationCharacteristic": {
+							"items": {
+								"$ref": "#/definitions/ImagingObservationCharacteristic.2"
+							},
+							"type": "array"
+						}
+					},
+					"required": [
+						"annotatorConfidence"
+					],
+					"type": "object"
+				},
+				"Inference": {
+					"additionalProperties": false,
+					"properties": {
+						"annotatorConfidence": {
+							"$ref": "#/definitions/xs:boolean"
+						}
+					},
+					"required": [
+						"annotatorConfidence"
+					],
+					"type": "object"
+				},
+				"Label": {
+					"$ref": "#/definitions/Label.1"
+				},
+				"QuestionType": {
+					"$ref": "#/definitions/ValidTerm"
+				},
+				"textFreeInput": {
+					"items": {
+						"$ref": "#/definitions/xs:string"
+					},
+					"type": "array"
+				},
+				"textFreeInputComponent": {
+					"items": {
+						"$ref": "#/definitions/xs:string"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"id",
+				"itemNumber",
+				"minCardinality"
+			],
+			"type": "object"
+		},
+		"GeometricShape.1": {
+			"additionalProperties": false,
+			"properties": {
+				"$": {
+					"$ref": "#/definitions/GeometricShape"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				}
+			},
+			"type": "object"
+		},
+		"ImagingObservationCharacteristic.1": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.1"
+					},
+					"type": "array"
+				},
+				"QuestionType": {
+					"$ref": "#/definitions/ValidTerm"
+				}
+			},
+			"required": [
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"id",
+				"itemNumber",
+				"minCardinality",
+				"annotatorConfidence"
+			],
+			"type": "object"
+		},
+		"ImagingObservationCharacteristic.2": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.1"
+					},
+					"type": "array"
+				},
+				"QuestionType": {
+					"$ref": "#/definitions/ValidTerm"
+				}
+			},
+			"required": [
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"id",
+				"itemNumber",
+				"minCardinality",
+				"annotatorConfidence"
+			],
+			"type": "object"
+		},
+		"Label.1": {
+			"additionalProperties": false,
+			"properties": {
+				"$": {
+					"$ref": "#/definitions/Label"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				}
+			},
+			"type": "object"
+		},
+		"Template.1": {
+			"additionalProperties": false,
+			"properties": {
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"creationDate": {
+					"$ref": "#/definitions/xs:date"
+				},
+				"description": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"isSegRequested": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"modality": {
+					"$ref": "#/definitions/modalityType"
+				},
+				"name": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"precedingAnnotation": {
+					"$ref": "#/definitions/PrecedingAnnotationRequest"
+				},
+				"templateType": {
+					"$ref": "#/definitions/TemplateTypeValues"
+				},
+				"uid": {
+					"$ref": "#/definitions/UID"
+				},
+				"version": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"Component": {
+					"items": {
+						"$ref": "#/definitions/Component.1"
+					},
+					"minItems": 1,
+					"type": "array"
+				},
+				"Tags": {
+					"additionalProperties": false,
+					"properties": {
+						"Tag": {
+							"items": {
+								"$ref": "#/definitions/Tag"
+							},
+							"minItems": 1,
+							"type": "array"
+						}
+					},
+					"required": [
+						"Tag"
+					],
+					"type": "object"
+				}
+			},
+			"required": [
+				"Component",
+				"codeValue",
+				"uid",
+				"description",
+				"name",
+				"codingSchemeDesignator",
+				"version",
+				"codeMeaning"
+			],
+			"type": "object"
+		},
+		"ValidTerm.1": {
+			"additionalProperties": false,
+			"properties": {
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"defaultAnswer": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"CharacteristicQuantification": {
+					"items": {
+						"$ref": "#/definitions/CharacteristicQuantification.1"
+					},
+					"type": "array"
+				},
+				"ValidTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"codingSchemeDesignator",
+				"codeValue",
+				"codeMeaning"
+			],
+			"type": "object"
+		},
+		"ValidTerm.2": {
+			"additionalProperties": false,
+			"properties": {
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"defaultAnswer": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"ValidTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"codingSchemeDesignator",
+				"codeValue",
+				"codeMeaning"
+			],
+			"type": "object"
+		},
+		"ValidTerm.3": {
+			"additionalProperties": false,
+			"properties": {
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"AlgorithmType": {
+					"items": {
+						"$ref": "#/definitions/CodedTerm.1"
+					},
+					"type": "array"
+				},
+				"ValidTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"codeValue",
+				"codeMeaning",
+				"codingSchemeDesignator"
+			],
+			"type": "object"
+		},
+		"TemplateContainer": {
+			"additionalProperties": false,
+			"properties": {
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"creationDate": {
+					"$ref": "#/definitions/xs:date"
+				},
+				"description": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"name": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"uid": {
+					"$ref": "#/definitions/UID"
+				},
+				"version": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"xsi:schemaLocation": {
+					"default": "gme://caCORE.caCORE/3.2/edu.northwestern.radiology.AIMTemplate"
+				},
+				"xmlns": {
+					"default": "gme://caCORE.caCORE/3.2/edu.northwestern.radiology.AIMTemplate"
+				},
+				"xmlns:xsi": {
+					"default": "http://www.w3.org/2001/XMLSchema-instance"
+				},
+				"Tags": {
+					"additionalProperties": false,
+					"properties": {
+						"Tag": {
+							"items": {
+								"$ref": "#/definitions/Tag"
+							},
+							"minItems": 1,
+							"type": "array"
+						}
+					},
+					"required": [
+						"Tag"
+					],
+					"type": "object"
+				},
+				"Template": {
+					"items": {
+						"$ref": "#/definitions/Template.1"
+					},
+					"minItems": 1,
+					"type": "array"
+				}
+			},
+			"required": [
+				"Template",
+				"description",
+				"name",
+				"version",
+				"uid"
+			],
+			"type": "object"
+		},
+		"Algorithm": {
+			"additionalProperties": false,
+			"properties": {
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"codeValue",
+				"codeMeaning",
+				"codingSchemeDesignator"
+			],
+			"type": "object"
+		},
+		"AnatomicEntityCharacteristic": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.1"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"annotatorConfidence",
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"itemNumber",
+				"minCardinality",
+				"id"
+			],
+			"type": "object"
+		},
+		"CharacteristicQuantification": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"characteristicQuantificationIndex": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"name": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"annotatorConfidence",
+				"name",
+				"characteristicQuantificationIndex"
+			],
+			"type": "object"
+		},
+		"CodedTerm": {
+			"additionalProperties": false,
+			"properties": {
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"codeValue",
+				"codeMeaning",
+				"codingSchemeDesignator"
+			],
+			"type": "object"
+		},
+		"Component": {
+			"additionalProperties": false,
+			"properties": {
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				}
+			},
+			"required": [
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"id",
+				"itemNumber",
+				"minCardinality"
+			],
+			"type": "object"
+		},
+		"ComponentCharacteristic": {
+			"additionalProperties": false,
+			"properties": {
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.1"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"id",
+				"itemNumber",
+				"minCardinality"
+			],
+			"type": "object"
+		},
+		"GeometricShape": {
+			"enum": [
+				"Point",
+				"Circle",
+				"Polyline",
+				"Ellipse",
+				"MultiPoint",
+				"3DPolygon",
+				"3DPolyline",
+				"3DMultiPoint",
+				"3DPoint",
+				"3DEllipse",
+				"3DEllipsoid",
+				"Line",
+				"AnyShape",
+				"AnyClosedShape"
+			],
+			"type": "string"
+		},
+		"ImagingObservationCharacteristic": {
+			"additionalProperties": false,
+			"properties": {
+				"annotatorConfidence": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"explanatoryText": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"groupLabel": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"id": {
+					"$ref": "#/definitions/UID"
+				},
+				"itemNumber": {
+					"$ref": "#/definitions/xs:integer"
+				},
+				"label": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"maxCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"minCardinality": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"requireComment": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"shouldDisplay": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"AllowedTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm.1"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"annotatorConfidence",
+				"shouldDisplay",
+				"maxCardinality",
+				"label",
+				"itemNumber",
+				"minCardinality",
+				"id"
+			],
+			"type": "object"
+		},
+		"Interval": {
+			"additionalProperties": false,
+			"properties": {
+				"$": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"askForInput": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"defaultAnswer": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"maxOperator": {
+					"$ref": "#/definitions/operator"
+				},
+				"maxValue": {
+					"$ref": "#/definitions/xs:double"
+				},
+				"minOperator": {
+					"$ref": "#/definitions/operator"
+				},
+				"minValue": {
+					"$ref": "#/definitions/xs:double"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"ucumString": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"valueDescription": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"valueLabel": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"minValue",
+				"maxValue",
+				"minOperator",
+				"maxOperator",
+				"ucumString"
+			],
+			"type": "object"
+		},
+		"Label": {
+			"enum": [
+				"Label"
+			],
+			"type": "string"
+		},
+		"Numerical": {
+			"additionalProperties": false,
+			"properties": {
+				"$": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"askForInput": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"defaultAnswer": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"operator": {
+					"$ref": "#/definitions/operator"
+				},
+				"ucumString": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"value": {
+					"$ref": "#/definitions/xs:double"
+				},
+				"valueDescription": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"valueLabel": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"value",
+				"ucumString"
+			],
+			"type": "object"
+		},
+		"PrecedingAnnotationRequest": {
+			"enum": [
+				"OfferToSelect",
+				"RequireToSelect",
+				"DoNotOffer"
+			],
+			"type": "string"
+		},
+		"Quantile": {
+			"additionalProperties": false,
+			"properties": {
+				"bins": {
+					"$ref": "#/definitions/xs:positiveInteger"
+				},
+				"defaultBin": {
+					"$ref": "#/definitions/xs:nonNegativeInteger"
+				},
+				"maxValue": {
+					"$ref": "#/definitions/xs:double"
+				},
+				"minValue": {
+					"$ref": "#/definitions/xs:double"
+				},
+				"nextId": {
+					"$ref": "#/definitions/UID"
+				},
+				"noMoreQuestions": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"valueDescription": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"valueLabel": {
+					"$ref": "#/definitions/xs:string"
+				}
+			},
+			"required": [
+				"bins",
+				"maxValue",
+				"minValue"
+			],
+			"type": "object"
+		},
+		"Scale": {
+			"additionalProperties": false,
+			"properties": {
+				"scaleType": {
+					"$ref": "#/definitions/ScaleType"
+				},
+				"ScaleLevel": {
+					"items": {
+						"additionalProperties": false,
+						"properties": {
+							"defaultAnswer": {
+								"$ref": "#/definitions/xs:boolean"
+							},
+							"nextId": {
+								"$ref": "#/definitions/UID"
+							},
+							"noMoreQuestions": {
+								"$ref": "#/definitions/xs:boolean"
+							},
+							"value": {
+								"$ref": "#/definitions/xs:string"
+							},
+							"valueDescription": {
+								"$ref": "#/definitions/xs:string"
+							},
+							"valueLabel": {
+								"$ref": "#/definitions/xs:string"
+							}
+						},
+						"required": [
+							"value"
+						],
+						"type": "object"
+					},
+					"minItems": 1,
+					"type": "array"
+				}
+			},
+			"required": [
+				"ScaleLevel",
+				"scaleType"
+			],
+			"type": "object"
+		},
+		"ScaleType": {
+			"enum": [
+				"Nominal",
+				"Ordinal",
+				"Ratio"
+			],
+			"type": "string"
+		},
+		"Tag": {
+			"additionalProperties": false,
+			"properties": {
+				"TagName": {
+					"$ref": "#/definitions/CodedTerm"
+				},
+				"TagValue": {
+					"$ref": "#/definitions/TagValue"
+				}
+			},
+			"required": [
+				"TagName",
+				"TagValue"
+			],
+			"type": "object"
+		},
+		"TagValue": {
+			"additionalProperties": false,
+			"properties": {
+				"CodedValue": {
+					"$ref": "#/definitions/CodedTerm"
+				},
+				"StringValue": {
+					"additionalProperties": false,
+					"properties": {
+						"$": {
+							"$ref": "#/definitions/xs:string"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"Template": {
+			"additionalProperties": false,
+			"properties": {
+				"authors": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"creationDate": {
+					"$ref": "#/definitions/xs:date"
+				},
+				"description": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"isSegRequested": {
+					"$ref": "#/definitions/xs:boolean"
+				},
+				"modality": {
+					"$ref": "#/definitions/modalityType"
+				},
+				"name": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"precedingAnnotation": {
+					"$ref": "#/definitions/PrecedingAnnotationRequest"
+				},
+				"templateType": {
+					"$ref": "#/definitions/TemplateTypeValues"
+				},
+				"uid": {
+					"$ref": "#/definitions/UID"
+				},
+				"version": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"Component": {
+					"items": {
+						"$ref": "#/definitions/Component.1"
+					},
+					"minItems": 1,
+					"type": "array"
+				},
+				"Tags": {
+					"additionalProperties": false,
+					"properties": {
+						"Tag": {
+							"items": {
+								"$ref": "#/definitions/Tag"
+							},
+							"minItems": 1,
+							"type": "array"
+						}
+					},
+					"required": [
+						"Tag"
+					],
+					"type": "object"
+				}
+			},
+			"required": [
+				"Component",
+				"codeValue",
+				"uid",
+				"description",
+				"name",
+				"codingSchemeDesignator",
+				"version",
+				"codeMeaning"
+			],
+			"type": "object"
+		},
+		"TemplateTypeValues": {
+			"enum": [
+				"Study",
+				"Series",
+				"Image"
+			],
+			"type": "string"
+		},
+		"UID": {
+			"maxLength": 64,
+			"minLength": 1,
+			"pattern": "^([0-2]((\\.0)|(\\.[1-9][0-9]*))*)$",
+			"type": "string"
+		},
+		"ValidTerm": {
+			"additionalProperties": false,
+			"properties": {
+				"codeMeaning": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codeValue": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeDesignator": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"codingSchemeVersion": {
+					"$ref": "#/definitions/xs:string"
+				},
+				"ValidTerm": {
+					"items": {
+						"$ref": "#/definitions/ValidTerm"
+					},
+					"type": "array"
+				}
+			},
+			"required": [
+				"codeValue",
+				"codeMeaning",
+				"codingSchemeDesignator"
+			],
+			"type": "object"
+		},
+		"modalityType": {
+			"enum": [
+				"AU",
+				"BDUS",
+				"BI",
+				"BMD",
+				"CD",
+				"CR",
+				"CT",
+				"DD",
+				"DOC",
+				"DG",
+				"DX",
+				"ECG",
+				"EPS",
+				"ES",
+				"GM",
+				"HC",
+				"HD",
+				"IO",
+				"IVUS",
+				"KO",
+				"LS",
+				"MG",
+				"MR",
+				"NM",
+				"OCT",
+				"OT",
+				"OP",
+				"OPM",
+				"OPT",
+				"OPR",
+				"OPV",
+				"PR",
+				"PT",
+				"PX",
+				"REG",
+				"RG",
+				"RTDOSE",
+				"RTIMAGE",
+				"RTPLAN",
+				"RTSTRUCT",
+				"RTRECORD",
+				"SEG",
+				"SM",
+				"SMR",
+				"SR",
+				"ST",
+				"US",
+				"XA",
+				"XC"
+			],
+			"type": "string"
+		},
+		"operator": {
+			"enum": [
+				"Equal",
+				"NotEqual",
+				"LessThan",
+				"GreaterThan",
+				"LessThanEqual",
+				"GreaterThanEqual"
+			],
+			"type": "string"
+		},
+		"xs:boolean": {
+			"type": "boolean"
+		},
+		"xs:date": {
+			"type": "string"
+		},
+		"xs:double": {
+			"type": "number"
+		},
+		"xs:integer": {
+			"type": "integer"
+		},
+		"xs:nonNegativeInteger": {
+			"minimum": 0,
+			"type": "integer"
+		},
+		"xs:positiveInteger": {
+			"minimum": 1,
+			"type": "integer"
+		},
+		"xs:string": {
+			"type": "string"
+		}
+	},
+	"description": "JSON Schema generated by XMLSpy v2018 sp1 (x64) (http://www.altova.com)",
+	"properties": {
+		"TemplateContainer": {
+			"$ref": "#/definitions/TemplateContainer"
+		}
+	},
+	"type": "object"
+}

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TemplateContainer uid="2.25.5886502342623758457547593170234" name="VK Template" authors="The AIM team" version="2.0" creationDate="2018-02-13" description="This template is used to collect annotations for RECIST evaluation" xsi:schemaLocation="gme://caCORE.caCORE/3.2/edu.northwestern.radiology.AIMTemplate AIMTemplate_v2rv13.xsd" xmlns="gme://caCORE.caCORE/3.2/edu.northwestern.radiology.AIMTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Template uid="2.25.14127115639382804046523562737575775778671" name="RECIST_v2" authors="epaduser" version="2.0" creationDate="2018-02-13" description="Template used for RECIST measurements" codeMeaning="Tumor assessment" codeValue="RECIST_v2" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0">
+      <Component label="Location" itemNumber="1" authors="epaduser" explanatoryText="Anatomic Location of lesion" minCardinality="1" maxCardinality="1" shouldDisplay="true" groupLabel="" id="2.25.4369054531089.1305416223173.217635712047">
+         <AnatomicEntity annotatorConfidence="false"/>
+         <AllowedTerm codeValue="RID58" codeMeaning="liver" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID170" codeMeaning="pancreas" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID86" codeMeaning="spleen" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID1362" codeMeaning="pleura" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID34539" codeMeaning="pleural effusion" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1326" codeMeaning="left lung" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1302" codeMeaning="right lung" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1327" codeMeaning="left upper lobe" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1338" codeMeaning="left lower lobe" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1303" codeMeaning="right upper lobe" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1310" codeMeaning="right middle lobe" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID1315" codeMeaning="right lower lobe" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID1310" codeMeaning="middle lobe of lung" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID1301" codeMeaning="lung" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID29663" codeMeaning="left kidney" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID29662" codeMeaning="right kidney" codingSchemeDesignator="RadLex"/>
+           <AllowedTerm codeValue="RID205" codeMeaning="kidney" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID6434" codeMeaning="brain" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID397" codeMeaning="peritoneal cavity" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID431" codeMeaning="retroperitoneum" codingSchemeDesignator="RadLex"/>
+         
+        <AllowedTerm codeValue="RID30325" codeMeaning="left adrenal gland" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID30324" codeMeaning="right adrenal gland" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID88" codeMeaning="adrenal gland" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID237" codeMeaning="bladder" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID13197" codeMeaning="bone" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID187" codeMeaning="gallbladder" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID94" codeMeaning="gastrointestinal tract" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID13296" codeMeaning="lymph node" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID29251" codeMeaning="omentum" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID32830" codeMeaning="left ovary" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID32829" codeMeaning="right ovary" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID290" codeMeaning="ovary" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID2617" codeMeaning="pelvic cavity" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID2507" codeMeaning="pelvis" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID302" codeMeaning="uterus" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID325" codeMeaning="vagina" codingSchemeDesignator="RadLex"/>
+         <AllowedTerm codeValue="RID343" codeMeaning="prostate" codingSchemeDesignator="RadLex"/>          
+          <AllowedTerm codeValue="RID38594" codeMeaning="bone marrow" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID31011" codeMeaning="colon" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID95" codeMeaning="esophagus" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID28749" codeMeaning="breast" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID1384" codeMeaning="mediastinum" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID410" codeMeaning="peritoneum" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID163" codeMeaning="rectum" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID34290" codeMeaning="skin" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID7578" codeMeaning="thyroid gland" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID34854" codeMeaning="tonsil" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID132" codeMeaning="small intestine" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="S99" codeMeaning="undefined organ" codingSchemeDesignator="99EPAD"/>
+          <AllowedTerm codeValue="RID7488" codeMeaning="neck" codingSchemeDesignator="RadLex"/>
+          <AllowedTerm codeValue="RID396" codeMeaning="perineum" codingSchemeDesignator="RadLex"/>
+          
+        <AllowedTerm codeValue="RID32691" codeMeaning="anal canal" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID164" codeMeaning="anus" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID168" codeMeaning="appendix" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID154" codeMeaning="cecum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID134" codeMeaning="duodenum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID31553" codeMeaning="cervical part of esophagus" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30346" codeMeaning="left uterine tube" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30345" codeMeaning="right uterine tube" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID295" codeMeaning="uterine tube" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID29380" codeMeaning="adipose tissue" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1394" codeMeaning="aortic valve" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID29225" codeMeaning="apex of heart" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1391" codeMeaning="left atrial appendage" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1388" codeMeaning="right atrial appendage" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1390" codeMeaning="left atrium" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1387" codeMeaning="right atrium" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1404" codeMeaning="interventricular septum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1395" codeMeaning="mitral valve" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1396" codeMeaning="pulmonic valve" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1397" codeMeaning="tricuspid valve" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1392" codeMeaning="left ventricle" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1389" codeMeaning="right ventricle" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1385" codeMeaning="heart" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID33180" codeMeaning="mesentery" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID32802" codeMeaning="musculature of back" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID39054" codeMeaning="muscle of lower limb" codingSchemeDesignator="RadLex"/>
+
+
+<AllowedTerm codeValue="RID2624" codeMeaning="psoas muscle" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID31610" codeMeaning="rectus abdominis" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID39501" codeMeaning="muscle of pectoral girdle" codingSchemeDesignator="RadLex"/>
+
+<AllowedTerm codeValue="RID39061" codeMeaning="external anal sphincter" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID165" codeMeaning="anal sphincter " codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID2694" codeMeaning="skeletal muscle of thigh" codingSchemeDesignator="RadLex"/>
+
+<AllowedTerm codeValue="RID39497" codeMeaning="muscle of thorax" codingSchemeDesignator="RadLex"/>
+
+<AllowedTerm codeValue="RID39053" codeMeaning="muscle of upper limb" codingSchemeDesignator="RadLex"/>
+
+<AllowedTerm codeValue="RID32753" codeMeaning="musculature" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID9554" codeMeaning="paranasal sinus" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID9544" codeMeaning="nasal vestibule" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID10030" codeMeaning="naris" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID35751" codeMeaning="orbital cavity" codingSchemeDesignator="RadLex"/>
+
+
+<AllowedTerm codeValue="RID30091" codeMeaning="major duodenal papilla" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30092" codeMeaning="minor duodenal papilla" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID362" codeMeaning="penis" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID1407" codeMeaning="pericardium" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID32521" codeMeaning="rectal ampulla" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID357" codeMeaning="seminal vesicle" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID151" codeMeaning="terminal ileum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID150" codeMeaning="ileum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID148" codeMeaning="jejunum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30014" codeMeaning="wall of abdomen" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID7361" codeMeaning="spinal cord" codingSchemeDesignator="RadLex"/>
+
+<AllowedTerm codeValue="RID119" codeMeaning="antrum of stomach" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID117" codeMeaning="body of stomach" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID115" codeMeaning="gastric cardia" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID116" codeMeaning="gastric fundus" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID124" codeMeaning="greater curvature of stomach" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID125" codeMeaning="lesser curvature of stomach" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30332" codeMeaning="pyloric canal" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID114" codeMeaning="stomach" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID38997" codeMeaning="left testis" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID38996" codeMeaning="right testis" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID366" codeMeaning="testis" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID33647" codeMeaning="transverse fold of rectum" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30845" codeMeaning="left ureter" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID30844" codeMeaning="right ureter" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID229" codeMeaning="ureter" codingSchemeDesignator="RadLex"/>
+<AllowedTerm codeValue="RID272" codeMeaning="vulva" codingSchemeDesignator="RadLex"/>
+
+          
+      </Component>
+      <Component label="Lesion Quality" itemNumber="2" authors="epaduser" explanatoryText="" minCardinality="1" maxCardinality="1" shouldDisplay="true" groupLabel="" id="2.25.4369054531658.1305416223742.217635712095">
+         <ImagingObservation annotatorConfidence="false">
+            <ImagingObservationCharacteristic label="Timepoint" itemNumber="1" authors="epaduser" explanatoryText="Timepoint of lesion" minCardinality="1" maxCardinality="1" shouldDisplay="true" groupLabel="" id="2.25.4369054532228.1305416224313.217635712143" annotatorConfidence="false">
+               <AllowedTerm codeValue="S90" codeMeaning="FU Number (0=Baseline)" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0" >
+                  <CharacteristicQuantification name="Timepoint" annotatorConfidence="false" characteristicQuantificationIndex="0">
+                     <Scale scaleType="Nominal">
+                        <ScaleLevel value="0" valueLabel="Baseline" valueDescription="T0"/>
+                        <ScaleLevel value="1" valueLabel="FU1" valueDescription="T1"/>
+                        <ScaleLevel value="2" valueLabel="FU2" valueDescription="T2"/>
+                        <ScaleLevel value="3" valueLabel="FU3" valueDescription="T3"/>
+                        <ScaleLevel value="4" valueLabel="FU4" valueDescription="T4"/>
+                        <ScaleLevel value="5" valueLabel="FU5" valueDescription="T5"/>
+                        <ScaleLevel value="6" valueLabel="FU6" valueDescription="T6"/>
+                        <ScaleLevel value="7" valueLabel="FU7" valueDescription="T7"/>
+                        <ScaleLevel value="8" valueLabel="FU8" valueDescription="T8"/>
+                        <ScaleLevel value="9" valueLabel="FU9" valueDescription="T9"/>
+                        <ScaleLevel value="10" valueLabel="FU10" valueDescription="T10"/>
+                        <ScaleLevel value="11" valueLabel="FU11" valueDescription="T11"/>
+                        <ScaleLevel value="12" valueLabel="FU12" valueDescription="T12"/>
+                        <ScaleLevel value="13" valueLabel="FU13" valueDescription="T13"/>
+                        <ScaleLevel value="14" valueLabel="FU14" valueDescription="T14"/>
+                         <ScaleLevel value="15" valueLabel="FU15" valueDescription="T15"/>
+                         <ScaleLevel value="16" valueLabel="FU16" valueDescription="T16"/>
+                         <ScaleLevel value="17" valueLabel="FU17" valueDescription="T17"/>
+                         <ScaleLevel value="18" valueLabel="FU18" valueDescription="T18"/>
+                         <ScaleLevel value="19" valueLabel="FU19" valueDescription="T19"/>
+                         <ScaleLevel value="20" valueLabel="FU20" valueDescription="T20"/>
+                         <ScaleLevel value="21" valueLabel="FU21" valueDescription="T21"/><ScaleLevel value="22" valueLabel="FU22" valueDescription="T22"/>
+                         <ScaleLevel value="23" valueLabel="FU23" valueDescription="T23"/>
+                         <ScaleLevel value="24" valueLabel="FU24" valueDescription="T24"/>
+                         <ScaleLevel value="25" valueLabel="FU25" valueDescription="T25"/>
+                         <ScaleLevel value="26" valueLabel="FU26" valueDescription="T26"/>
+                         <ScaleLevel value="27" valueLabel="FU27" valueDescription="T27"/>
+                         <ScaleLevel value="28" valueLabel="FU28" valueDescription="T28"/>
+                         <ScaleLevel value="29" valueLabel="FU29" valueDescription="T29"/>
+                         
+                     </Scale>
+                  </CharacteristicQuantification>
+               </AllowedTerm>
+            </ImagingObservationCharacteristic>
+            <ImagingObservationCharacteristic label="Type" itemNumber="2" authors="epaduser" explanatoryText="Type of lesion" minCardinality="1" maxCardinality="1" shouldDisplay="true" groupLabel="" id="2.25.4369054532228.1305416224313.217635712143" annotatorConfidence="false">
+               <AllowedTerm codeValue="S71" codeMeaning="Target Lesion" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0"/>
+               <AllowedTerm codeValue="S72" codeMeaning="Non-Target Lesion" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0"/>
+               
+                <AllowedTerm codeValue="S75" codeMeaning="Non-cancer Lesion" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0"/>
+            </ImagingObservationCharacteristic>
+             <ImagingObservationCharacteristic label="Lesion Status" itemNumber="3" authors="epaduser" explanatoryText="Status of lesion" minCardinality="1" maxCardinality="1" shouldDisplay="true" groupLabel="" annotatorConfidence="false" id="2.25.436905441089.13054168484973.21324571207">
+         <AllowedTerm codeValue="RID28472" codeMeaning="Present Lesion" codingSchemeDesignator="RadLex"/>
+        <AllowedTerm codeValue="RID39162" codeMeaning="Progressive Lesion" codingSchemeDesignator="RadLex"/>
+        <AllowedTerm codeValue="S73" codeMeaning="New Lesion" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0"/>
+        <AllowedTerm codeValue="S74" codeMeaning="Resolved Lesion" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0"/>
+         </ImagingObservationCharacteristic>
+             <ImagingObservationCharacteristic label="Lesion Enhancement" itemNumber="3" authors="epaduser" explanatoryText="Enhancement state of lesion" minCardinality="0" maxCardinality="1" shouldDisplay="true" groupLabel="" annotatorConfidence="false" id="2.25.436905441089.13054164543173.217634571207">
+         <AllowedTerm codeValue="RID6055" codeMeaning="Enhancing" codingSchemeDesignator="RadLex"/>
+        <AllowedTerm codeValue="RID6056" codeMeaning="Nonenhancing" codingSchemeDesignator="RadLex"/>
+       </ImagingObservationCharacteristic>
+             </ImagingObservation>
+         <AllowedTerm codeValue="S86" codeMeaning="Evaluable" codingSchemeDesignator="99EPAD" codingSchemeVersion="1.0" defaultAnswer="true"/>
+         <AllowedTerm codeValue="RID39225" codeMeaning="Nonevaluable" codingSchemeDesignator="Radlex" />
+          
+           
+       </Component>
+       
+   </Template>
+</TemplateContainer>

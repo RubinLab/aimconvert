@@ -1,0 +1,22 @@
+{
+  "name": "aimconvert",
+  "version": "1.0.0",
+  "description": "Convert AIM and AIM Template files between xml format and json",
+  "main": "index.js",
+  "bin": {
+    "aimconvert": "bin/aimconvert"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "AIM",
+    "XML",
+    "JSON"
+  ],
+  "author": "Emel Alkim",
+  "license": "ISC",
+  "dependencies": {
+    "xml2js": "^0.4.19"
+  }
+}
