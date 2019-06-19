@@ -97,8 +97,18 @@ function checkAndMarkAttr(parent, key, mode) {
   }
 }
 
-const processFile = (inputPath, outputPath, processMode) =>
+const processFile = (inputPath, outputPath, convertMode) =>
   new Promise((resolve, reject) => {
+    let processMode = convertMode;
+    if (processMode === 'first') {
+      if (inputPath.toLowerCase().endsWith('json')) {
+        console.log('No mode is given. found json, converting to xml');
+        processMode = 'json2xml';
+      } else {
+        console.log('No mode is given. Trying to convert to json');
+        processMode = 'xml2json';
+      }
+    }
     const parser = new xml2js.Parser({ attrkey: '', mergeAttrs: true, explicitArray: false });
     fs.readFile(inputPath, (err, data) => {
       if (!err) {
@@ -232,18 +242,17 @@ module.exports = () => {
       console.log('Unknown mode. Accepted modes are xml2json and json2xml');
       return;
     }
-    if (fs.lstatSync(args[0]).isDirectory()) processDir(args[1], args[2], args[0]);
+    if (fs.lstatSync(args[1]).isDirectory()) processDir(args[1], args[2], args[0]);
     else processFile(args[1], args[2], args[0]);
+    console.log(`Done processing ${args[1]}`);
   } else if (args.length === 2) {
     // input output
     if (fs.lstatSync(args[0]).isDirectory()) processDir(args[0], args[1], 'first');
     else processFile(args[0], args[1], 'first');
+    console.log(`Done processing ${args[0]}`);
   } else {
     console.log(
       'Unknown argument list. Sample usage: \n aimconvert xml2json aim.xml aim.json \n aimconvert json2xml jsons/ aims'
     );
-    return;
   }
-
-  console.log(`Done processing ${args[0]}`);
 };
