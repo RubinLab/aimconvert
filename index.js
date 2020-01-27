@@ -1,6 +1,5 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
-// const splineConverter = require('./splineConverter');
 
 const what = Object.prototype.toString;
 const tagAndAttrLists = require('./tagAndAttrLists.json');
