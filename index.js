@@ -1,5 +1,6 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
+// const splineConverter = require('./splineConverter');
 
 const what = Object.prototype.toString;
 const tagAndAttrLists = require('./tagAndAttrLists.json');
@@ -118,6 +119,43 @@ const processFile = (inputPath, outputPath, convertMode) =>
               let mode = 'aim';
               if ('TemplateContainer' in result) mode = 'template';
               walkObj(result, checkAndFix, mode);
+
+              if (mode !== 'template') {
+                let isSpline;
+                let markupEntity = result.ImageAnnotationCollection.imageAnnotations
+                  .ImageAnnotation[0].markupEntityCollection
+                  ? result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
+                      .markupEntityCollection.MarkupEntity[0]
+                  : null;
+                let aimID = markupEntity ? markupEntity.uniqueIdentifier.root : null;
+                isSpline = aimID ? aimID.includes('spline') : null;
+
+                if (isSpline) {
+                  const coordinates =
+                    markupEntity.twoDimensionSpatialCoordinateCollection
+                      .TwoDimensionSpatialCoordinate;
+
+                  const convertedCoordinates = splineConverter(coordinates);
+
+                  markupEntity.twoDimensionSpatialCoordinateCollection.TwoDimensionSpatialCoordinate = convertedCoordinates;
+                  markupEntity.uniqueIdentifier.root = markupEntity.uniqueIdentifier.root.replace(
+                    '###.spline.###',
+                    ''
+                  );
+
+                  const imgAnnotationStatements =
+                    result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
+                      .imageAnnotationStatementCollection.ImageAnnotationStatement;
+
+                  imgAnnotationStatements.forEach(statement => {
+                    statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
+                      '###.spline.###',
+                      ''
+                    );
+                  });
+                }
+              }
+
               fs.writeFileSync(outputPath, JSON.stringify(result), err3 => {
                 if (err3) {
                   console.log(`Error processing ${inputPath}: ${err3.message}`);
@@ -233,6 +271,242 @@ const processDir = (inputPath, outputPath, mode) =>
     }
     //
   });
+
+const splineConverter = coordList => {
+  // TODO check number formatter
+  //   NumberFormat df = NumberFormat.getFormat("000.000");
+
+  // make a copy of the coordList
+  const coords = [];
+  for (let i = 0; i < coordList.length; i += 1) {
+    const coordinate = { x: coordList[i].x.value, y: coordList[i].y.value };
+    coords.push(coordinate);
+  }
+  let tot = coords.length;
+
+  // if input doesn't repeat the start point, we do it for you
+  if (!(coords[0].x === coords[tot - 1].x && coords[0].y === coords[tot - 1].y)) {
+    coords.push({ x: coordList[0].x.value, y: coordList[0].y.value });
+    tot++;
+  }
+  let aax, bbx, ccx, ddx, aay, bby, ccy, ddy; // coef of spline
+
+  // if( scale > 5) scale = 5;
+  let scale = 1;
+  //
+  // // function spline S(x) = a x3 + bx2 + cx + d
+  // // with S continue, S1 continue, S2 continue.
+  // // smoothing of a closed polygon given by a list of points (x,y)
+  // // we compute a spline for x and a spline for y
+  // // where x and y are function of d where t is the distance
+  // between points
+  //
+  // // compute tridiag matrix
+  // // | b1 c1 0 ... | | u1 | | r1 |
+  // // | a2 b2 c2 0 ... | | u2 | | r2 |
+  // // | 0 a3 b3 c3 0 ... | * | ... | = | ... |
+  // // | ... | | ... | | ... |
+  // // | an-1 bn-1 cn-1 | | ... | | ... |
+  // // | 0 an bn | | un | | rn |
+  // // bi = 4
+  // // resolution algorithm is taken from the book : Numerical
+  // recipes in C
+  //
+  // // initialization of different vectors
+  // // element number 0 is not used (except h[0])
+  let nb = tot + 2;
+
+  // a, c, cx, cy, d, g, gam, h, px, py = malloc(nb*sizeof(double));
+  // BOOL failed = NO;
+  //
+  // Initialization
+  const a = [];
+  const c = [];
+  const cx = [];
+  const cy = [];
+  const d = [];
+  const g = [];
+  const gam = [];
+  const h = [];
+  const px = [];
+  const py = [];
+
+  for (let i = 0; i < nb; i++) {
+    a[i] = 0;
+    c[i] = 0;
+    cx[i] = 0;
+    cy[i] = 0;
+    d[i] = 0;
+    g[i] = 0;
+    gam[i] = 0;
+    h[i] = 0;
+    cx[i] = 0;
+    cy[i] = 0;
+  }
+
+  //
+  // // as a spline starts and ends with a line one adds two points
+  // // in order to have continuity in starting point
+  // for (i=0; i<tot; i++)
+  // {
+  // px[i+1] = Pt[i].x;// * fZoom / 100;
+  // py[i+1] = Pt[i].y;// * fZoom / 100;
+  // }
+  for (let i = 0; i < tot; i++) {
+    px[i + 1] = coords[i].x;
+    py[i + 1] = coords[i].y;
+  }
+
+  px[0] = px[nb - 3];
+  py[0] = py[nb - 3];
+  px[nb - 1] = px[2];
+  py[nb - 1] = py[2];
+
+  // px[0] = px[nb-3]; py[0] = py[nb-3];
+  // px[nb-1] = px[2]; py[nb-1] = py[2];
+
+  //
+  // // check all points are separate, if not do not smooth
+  // // this happens when the zoom factor is too small
+  // // so in this case the smooth is not useful
+  //
+  // // define hi (distance between points) h0 distance between 0 and
+  // 1.
+  // // di distance of point i from start point
+  let xi, yi;
+
+  for (let i = 0; i < nb - 1; i++) {
+    xi = px[i + 1] - px[i];
+    yi = py[i + 1] - py[i];
+    h[i] = Math.sqrt(xi * xi + yi * yi) * scale;
+    d[i + 1] = d[i] + h[i];
+  }
+
+  //
+
+  // define ai and ci
+  for (let i = 2; i < nb - 1; i++) a[i] = (2.0 * h[i - 1]) / (h[i] + h[i - 1]);
+  for (let i = 1; i < nb - 2; i++) c[i] = (2.0 * h[i]) / (h[i] + h[i - 1]);
+
+  //
+  // define gi in function of x
+  // gi+1 = 6 * Y[hi, hi+1, hi+2],
+  // Y[hi, hi+1, hi+2] = [(yi - yi+1)/(di - di+1) - (yi+1 -
+  // yi+2)/(di+1 - di+2)]
+  // / (di - di+2)
+  for (let i = 1; i < nb - 1; i++)
+    g[i] =
+      (6.0 * ((px[i - 1] - px[i]) / (d[i - 1] - d[i]) - (px[i] - px[i + 1]) / (d[i] - d[i + 1]))) /
+      (d[i - 1] - d[i + 1]);
+
+  // // compute cx vector
+  let b, bet;
+  b = 4;
+  bet = 4;
+  cx[1] = g[1] / b;
+  for (let j = 2; j < nb - 1; j++) {
+    gam[j] = c[j - 1] / bet;
+    bet = b - a[j] * gam[j];
+    cx[j] = (g[j] - a[j] * cx[j - 1]) / bet;
+  }
+  for (let j = nb - 2; j >= 1; j--) cx[j] -= gam[j + 1] * cx[j + 1];
+
+  // define gi in function of y
+  // gi+1 = 6 * Y[hi, hi+1, hi+2],
+  // Y[hi, hi+1, hi+2] = [(yi - yi+1)/(hi - hi+1) - (yi+1 -
+  // yi+2)/(hi+1 - hi+2)]
+  // / (hi - hi+2)
+  for (let i = 1; i < nb - 1; i++)
+    g[i] =
+      (6.0 * ((py[i - 1] - py[i]) / (d[i - 1] - d[i]) - (py[i] - py[i + 1]) / (d[i] - d[i + 1]))) /
+      (d[i - 1] - d[i + 1]);
+
+  //
+  // compute cy vector
+  b = 4.0;
+  bet = 4.0;
+  cy[1] = g[1] / b;
+  for (let j = 2; j < nb - 1; j++) {
+    gam[j] = c[j - 1] / bet;
+    bet = b - a[j] * gam[j];
+    cy[j] = (g[j] - a[j] * cy[j - 1]) / bet;
+  }
+  for (let j = nb - 2; j >= 1; j--) cy[j] -= gam[j + 1] * cy[j + 1];
+
+  // OK we have the cx and cy vectors, from that we can compute the
+  // coeff of the polynoms for x and y and for each interval
+  // S(x) (xi, xi+1) = ai + bi (x-xi) + ci (x-xi)2 + di (x-xi)3
+  // di = (ci+1 - ci) / 3 hi
+  // ai = yi
+  // bi = ((ai+1 - ai) / hi) - (hi/3) (ci+1 + 2 ci)
+
+  // @SuppressWarnings("unused")
+  let tt = 0;
+  let res = '';
+  // for each interval
+  for (let i = 1; i < nb - 2; i++) {
+    // compute coef for x polynom
+    ccx = cx[i];
+    aax = px[i];
+    ddx = (cx[i + 1] - cx[i]) / (3.0 * h[i]);
+    bbx = (px[i + 1] - px[i]) / h[i] - (h[i] / 3.0) * (cx[i + 1] + 2.0 * cx[i]);
+
+    // compute coef for y polynom
+    ccy = cy[i];
+    aay = py[i];
+    ddy = (cy[i + 1] - cy[i]) / (3.0 * h[i]);
+    bby = (py[i + 1] - py[i]) / h[i] - (h[i] / 3.0) * (cy[i + 1] + 2.0 * cy[i]);
+
+    // compute points in this interval and display
+    let p1x, p1y;
+    p1x = aax;
+    p1y = aay;
+
+    // (*newPt)[tt]=p1;
+    // res += String.format(" %6.4f %6.4f", p1x, p1y);
+    // res += " " + df.format(p1x) + " " + df.format(p1y);
+    // res += " " + Double.toString(p1x) + " " +
+    // Double.toString(p1y);
+
+    res += ' ' + p1x + ' ' + p1y;
+    // res += ' ' + df.format(p1x) + ' ' + df.format(p1y);
+
+    tt++;
+
+    for (let j = 1; j <= h[i]; j++) {
+      let p2x, p2y;
+      p2x = aax + bbx * j + ccx * (j * j) + ddx * (j * j * j);
+      p2y = aay + bby * j + ccy * (j * j) + ddy * (j * j * j);
+      // (*newPt)[tt]=p2;
+      // res += String.format(" %6.4f %6.4f", p2x, p2y);
+      // res += " " + df.format(p2x) + " " + df.format(p2y);
+      // res += " " + Double.toString(p2x) + " " +
+      // Double.toString(p2y);
+
+      res += ' ' + p2x + ' ' + p2y;
+      // res += ' ' + df.format(p2x) + ' ' + df.format(p2y);
+      tt++;
+    } // endfor points in 1 interval
+  } // endfor each interval
+  // *newPt = calloc(totNewPt, sizeof(NSPoint));
+  res = coordinateParser(res);
+  // res = JSON.stringify(res);
+  return res;
+};
+
+const coordinateParser = coordinateString => {
+  let coordArr = coordinateString.split(' ');
+  coordArr = coordArr.filter(coord => coord.length > 0 && coord !== ' ');
+  const coordRes = [];
+  let coordinateIndex = 0;
+  for (let i = 0; i < coordArr.length - 1; i += 2) {
+    const x = parseFloat(coordArr[i]);
+    const y = parseFloat(coordArr[i + 1]);
+    coordRes.push({ coordinateIndex: coordinateIndex, x: { value: x }, y: { value: y } });
+    coordinateIndex++;
+  }
+  return coordRes;
+};
 
 module.exports = () => {
   const args = process.argv.slice(2);
