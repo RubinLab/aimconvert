@@ -120,14 +120,13 @@ const processFile = (inputPath, outputPath, convertMode) =>
               walkObj(result, checkAndFix, mode);
 
               if (mode !== 'template') {
-                let isSpline;
-                let markupEntity = result.ImageAnnotationCollection.imageAnnotations
+                const markupEntity = result.ImageAnnotationCollection.imageAnnotations
                   .ImageAnnotation[0].markupEntityCollection
                   ? result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
                       .markupEntityCollection.MarkupEntity[0]
                   : null;
-                let aimID = markupEntity ? markupEntity.uniqueIdentifier.root : null;
-                isSpline = aimID ? aimID.includes('spline') : null;
+                const aimID = markupEntity ? markupEntity.uniqueIdentifier.root : null;
+                const isSpline = aimID ? aimID.includes('spline') : null;
 
                 if (isSpline) {
                   const coordinates =
@@ -147,6 +146,7 @@ const processFile = (inputPath, outputPath, convertMode) =>
                       .imageAnnotationStatementCollection.ImageAnnotationStatement;
 
                   imgAnnotationStatements.forEach(statement => {
+                    // eslint-disable-next-line no-param-reassign
                     statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
                       '###.spline.###',
                       ''
@@ -283,12 +283,19 @@ const splineConverter = coordList => {
   // if input doesn't repeat the start point, we do it for you
   if (!(coords[0].x === coords[tot - 1].x && coords[0].y === coords[tot - 1].y)) {
     coords.push({ x: coordList[0].x.value, y: coordList[0].y.value });
-    tot++;
+    tot += 1;
   }
-  let aax, bbx, ccx, ddx, aay, bby, ccy, ddy; // coef of spline
+  let aax;
+  let bbx;
+  let ccx;
+  let ddx;
+  let aay;
+  let bby;
+  let ccy;
+  let ddy; // coef of spline
 
   // if( scale > 5) scale = 5;
-  let scale = 1;
+  const scale = 1;
   //
   // // function spline S(x) = a x3 + bx2 + cx + d
   // // with S continue, S1 continue, S2 continue.
@@ -310,7 +317,7 @@ const splineConverter = coordList => {
   //
   // // initialization of different vectors
   // // element number 0 is not used (except h[0])
-  let nb = tot + 2;
+  const nb = tot + 2;
 
   // a, c, cx, cy, d, g, gam, h, px, py = malloc(nb*sizeof(double));
   // BOOL failed = NO;
@@ -327,7 +334,7 @@ const splineConverter = coordList => {
   const px = [];
   const py = [];
 
-  for (let i = 0; i < nb; i++) {
+  for (let i = 0; i < nb; i += 1) {
     a[i] = 0;
     c[i] = 0;
     cx[i] = 0;
@@ -347,14 +354,16 @@ const splineConverter = coordList => {
   // px[i+1] = Pt[i].x;// * fZoom / 100;
   // py[i+1] = Pt[i].y;// * fZoom / 100;
   // }
-  for (let i = 0; i < tot; i++) {
+  for (let i = 0; i < tot; i += 1) {
     px[i + 1] = coords[i].x;
     py[i + 1] = coords[i].y;
   }
 
   px[0] = px[nb - 3];
   py[0] = py[nb - 3];
+  // eslint-disable-next-line prefer-destructuring
   px[nb - 1] = px[2];
+  // eslint-disable-next-line prefer-destructuring
   py[nb - 1] = py[2];
 
   // // check all points are separate, if not do not smooth
@@ -364,9 +373,10 @@ const splineConverter = coordList => {
   // // define hi (distance between points) h0 distance between 0 and
   // 1.
   // // di distance of point i from start point
-  let xi, yi;
+  let xi;
+  let yi;
 
-  for (let i = 0; i < nb - 1; i++) {
+  for (let i = 0; i < nb - 1; i += 1) {
     xi = px[i + 1] - px[i];
     yi = py[i + 1] - py[i];
     h[i] = Math.sqrt(xi * xi + yi * yi) * scale;
@@ -374,37 +384,38 @@ const splineConverter = coordList => {
   }
 
   // define ai and ci
-  for (let i = 2; i < nb - 1; i++) a[i] = (2.0 * h[i - 1]) / (h[i] + h[i - 1]);
-  for (let i = 1; i < nb - 2; i++) c[i] = (2.0 * h[i]) / (h[i] + h[i - 1]);
+  for (let i = 2; i < nb - 1; i += 1) a[i] = (2.0 * h[i - 1]) / (h[i] + h[i - 1]);
+  for (let i = 1; i < nb - 2; i += 1) c[i] = (2.0 * h[i]) / (h[i] + h[i - 1]);
 
   // define gi in function of x
   // gi+1 = 6 * Y[hi, hi+1, hi+2],
   // Y[hi, hi+1, hi+2] = [(yi - yi+1)/(di - di+1) - (yi+1 -
   // yi+2)/(di+1 - di+2)]
   // / (di - di+2)
-  for (let i = 1; i < nb - 1; i++)
+  for (let i = 1; i < nb - 1; i += 1)
     g[i] =
       (6.0 * ((px[i - 1] - px[i]) / (d[i - 1] - d[i]) - (px[i] - px[i + 1]) / (d[i] - d[i + 1]))) /
       (d[i - 1] - d[i + 1]);
 
   // // compute cx vector
-  let b, bet;
+  let b;
+  let bet;
   b = 4;
   bet = 4;
   cx[1] = g[1] / b;
-  for (let j = 2; j < nb - 1; j++) {
+  for (let j = 2; j < nb - 1; j += 1) {
     gam[j] = c[j - 1] / bet;
     bet = b - a[j] * gam[j];
     cx[j] = (g[j] - a[j] * cx[j - 1]) / bet;
   }
-  for (let j = nb - 2; j >= 1; j--) cx[j] -= gam[j + 1] * cx[j + 1];
+  for (let j = nb - 2; j >= 1; j -= 1) cx[j] -= gam[j + 1] * cx[j + 1];
 
   // define gi in function of y
   // gi+1 = 6 * Y[hi, hi+1, hi+2],
   // Y[hi, hi+1, hi+2] = [(yi - yi+1)/(hi - hi+1) - (yi+1 -
   // yi+2)/(hi+1 - hi+2)]
   // / (hi - hi+2)
-  for (let i = 1; i < nb - 1; i++)
+  for (let i = 1; i < nb - 1; i += 1)
     g[i] =
       (6.0 * ((py[i - 1] - py[i]) / (d[i - 1] - d[i]) - (py[i] - py[i + 1]) / (d[i] - d[i + 1]))) /
       (d[i - 1] - d[i + 1]);
@@ -413,12 +424,12 @@ const splineConverter = coordList => {
   b = 4.0;
   bet = 4.0;
   cy[1] = g[1] / b;
-  for (let j = 2; j < nb - 1; j++) {
+  for (let j = 2; j < nb - 1; j += 1) {
     gam[j] = c[j - 1] / bet;
     bet = b - a[j] * gam[j];
     cy[j] = (g[j] - a[j] * cy[j - 1]) / bet;
   }
-  for (let j = nb - 2; j >= 1; j--) cy[j] -= gam[j + 1] * cy[j + 1];
+  for (let j = nb - 2; j >= 1; j -= 1) cy[j] -= gam[j + 1] * cy[j + 1];
 
   // OK we have the cx and cy vectors, from that we can compute the
   // coeff of the polynoms for x and y and for each interval
@@ -431,7 +442,7 @@ const splineConverter = coordList => {
   let tt = 0;
   let res = '';
   // for each interval
-  for (let i = 1; i < nb - 2; i++) {
+  for (let i = 1; i < nb - 2; i += 1) {
     // compute coef for x polynom
     ccx = cx[i];
     aax = px[i];
@@ -445,18 +456,16 @@ const splineConverter = coordList => {
     bby = (py[i + 1] - py[i]) / h[i] - (h[i] / 3.0) * (cy[i + 1] + 2.0 * cy[i]);
 
     // compute points in this interval and display
-    let p1x, p1y;
-    p1x = aax;
-    p1y = aay;
-    res += ' ' + p1x + ' ' + p1y;
-    tt++;
+    const p1x = aax;
+    const p1y = aay;
+    res += ` ${p1x} ${p1y}`;
+    tt += 1;
 
-    for (let j = 1; j <= h[i]; j++) {
-      let p2x, p2y;
-      p2x = aax + bbx * j + ccx * (j * j) + ddx * (j * j * j);
-      p2y = aay + bby * j + ccy * (j * j) + ddy * (j * j * j);
-      res += ' ' + p2x + ' ' + p2y;
-      tt++;
+    for (let j = 1; j <= h[i]; j += 1) {
+      const p2x = aax + bbx * j + ccx * (j * j) + ddx * (j * j * j);
+      const p2y = aay + bby * j + ccy * (j * j) + ddy * (j * j * j);
+      res += ` ${p2x} ${p2y}`;
+      tt += 1;
     } // endfor points in 1 interval
   } // endfor each interval
   res = coordinateParser(res);
@@ -471,8 +480,8 @@ const coordinateParser = coordinateString => {
   for (let i = 0; i < coordArr.length - 1; i += 2) {
     const x = parseFloat(coordArr[i]);
     const y = parseFloat(coordArr[i + 1]);
-    coordRes.push({ coordinateIndex: coordinateIndex, x: { value: x }, y: { value: y } });
-    coordinateIndex++;
+    coordRes.push({ coordinateIndex, x: { value: x }, y: { value: y } });
+    coordinateIndex += 1;
   }
   return coordRes;
 };
