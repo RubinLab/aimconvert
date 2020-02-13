@@ -272,9 +272,6 @@ const processDir = (inputPath, outputPath, mode) =>
   });
 
 const splineConverter = coordList => {
-  // TODO check number formatter
-  //   NumberFormat df = NumberFormat.getFormat("000.000");
-
   // make a copy of the coordList
   const coords = [];
   for (let i = 0; i < coordList.length; i += 1) {
@@ -343,7 +340,6 @@ const splineConverter = coordList => {
     cy[i] = 0;
   }
 
-  //
   // // as a spline starts and ends with a line one adds two points
   // // in order to have continuity in starting point
   // for (i=0; i<tot; i++)
@@ -361,10 +357,6 @@ const splineConverter = coordList => {
   px[nb - 1] = px[2];
   py[nb - 1] = py[2];
 
-  // px[0] = px[nb-3]; py[0] = py[nb-3];
-  // px[nb-1] = px[2]; py[nb-1] = py[2];
-
-  //
   // // check all points are separate, if not do not smooth
   // // this happens when the zoom factor is too small
   // // so in this case the smooth is not useful
@@ -381,13 +373,10 @@ const splineConverter = coordList => {
     d[i + 1] = d[i] + h[i];
   }
 
-  //
-
   // define ai and ci
   for (let i = 2; i < nb - 1; i++) a[i] = (2.0 * h[i - 1]) / (h[i] + h[i - 1]);
   for (let i = 1; i < nb - 2; i++) c[i] = (2.0 * h[i]) / (h[i] + h[i - 1]);
 
-  //
   // define gi in function of x
   // gi+1 = 6 * Y[hi, hi+1, hi+2],
   // Y[hi, hi+1, hi+2] = [(yi - yi+1)/(di - di+1) - (yi+1 -
@@ -420,7 +409,6 @@ const splineConverter = coordList => {
       (6.0 * ((py[i - 1] - py[i]) / (d[i - 1] - d[i]) - (py[i] - py[i + 1]) / (d[i] - d[i + 1]))) /
       (d[i - 1] - d[i + 1]);
 
-  //
   // compute cy vector
   b = 4.0;
   bet = 4.0;
@@ -460,36 +448,18 @@ const splineConverter = coordList => {
     let p1x, p1y;
     p1x = aax;
     p1y = aay;
-
-    // (*newPt)[tt]=p1;
-    // res += String.format(" %6.4f %6.4f", p1x, p1y);
-    // res += " " + df.format(p1x) + " " + df.format(p1y);
-    // res += " " + Double.toString(p1x) + " " +
-    // Double.toString(p1y);
-
     res += ' ' + p1x + ' ' + p1y;
-    // res += ' ' + df.format(p1x) + ' ' + df.format(p1y);
-
     tt++;
 
     for (let j = 1; j <= h[i]; j++) {
       let p2x, p2y;
       p2x = aax + bbx * j + ccx * (j * j) + ddx * (j * j * j);
       p2y = aay + bby * j + ccy * (j * j) + ddy * (j * j * j);
-      // (*newPt)[tt]=p2;
-      // res += String.format(" %6.4f %6.4f", p2x, p2y);
-      // res += " " + df.format(p2x) + " " + df.format(p2y);
-      // res += " " + Double.toString(p2x) + " " +
-      // Double.toString(p2y);
-
       res += ' ' + p2x + ' ' + p2y;
-      // res += ' ' + df.format(p2x) + ' ' + df.format(p2y);
       tt++;
     } // endfor points in 1 interval
   } // endfor each interval
-  // *newPt = calloc(totNewPt, sizeof(NSPoint));
   res = coordinateParser(res);
-  // res = JSON.stringify(res);
   return res;
 };
 
