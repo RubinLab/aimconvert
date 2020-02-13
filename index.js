@@ -97,180 +97,19 @@ function checkAndMarkAttr(parent, key, mode) {
   }
 }
 
-const processFile = (inputPath, outputPath, convertMode) =>
-  new Promise((resolve, reject) => {
-    let processMode = convertMode;
-    if (processMode === 'first') {
-      if (inputPath.toLowerCase().endsWith('json')) {
-        console.log('No mode is given. found json, converting to xml');
-        processMode = 'json2xml';
-      } else {
-        console.log('No mode is given. Trying to convert to json');
-        processMode = 'xml2json';
-      }
-    }
-    const parser = new xml2js.Parser({ attrkey: '', mergeAttrs: true, explicitArray: false });
-    fs.readFile(inputPath, (err, data) => {
-      if (!err) {
-        if (processMode === 'xml2json') {
-          parser.parseString(data, (err2, result) => {
-            if (!err2) {
-              let mode = 'aim';
-              if ('TemplateContainer' in result) mode = 'template';
-              walkObj(result, checkAndFix, mode);
-
-              if (mode !== 'template') {
-                const markupEntity = result.ImageAnnotationCollection.imageAnnotations
-                  .ImageAnnotation[0].markupEntityCollection
-                  ? result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
-                      .markupEntityCollection.MarkupEntity[0]
-                  : null;
-                const aimID = markupEntity ? markupEntity.uniqueIdentifier.root : null;
-                const isSpline = aimID ? aimID.includes('spline') : null;
-
-                if (isSpline) {
-                  const coordinates =
-                    markupEntity.twoDimensionSpatialCoordinateCollection
-                      .TwoDimensionSpatialCoordinate;
-
-                  const convertedCoordinates = splineConverter(coordinates);
-
-                  markupEntity.twoDimensionSpatialCoordinateCollection.TwoDimensionSpatialCoordinate = convertedCoordinates;
-                  markupEntity.uniqueIdentifier.root = markupEntity.uniqueIdentifier.root.replace(
-                    '###.spline.###',
-                    ''
-                  );
-
-                  const imgAnnotationStatements =
-                    result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
-                      .imageAnnotationStatementCollection.ImageAnnotationStatement;
-
-                  imgAnnotationStatements.forEach(statement => {
-                    // eslint-disable-next-line no-param-reassign
-                    statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
-                      '###.spline.###',
-                      ''
-                    );
-                  });
-                }
-              }
-
-              fs.writeFileSync(outputPath, JSON.stringify(result), err3 => {
-                if (err3) {
-                  console.log(`Error processing ${inputPath}: ${err3.message}`);
-                  reject(err3);
-                } else resolve();
-              });
-            } else {
-              console.log(`Error processing ${inputPath}: ${err2.message}`);
-              reject(err2);
-            }
-          });
-        } else if (processMode === 'json2xml') {
-          const result = JSON.parse(data);
-          let mode = 'aim';
-          if ('TemplateContainer' in result) mode = 'template';
-          walkObj(result, checkAndMarkAttr, mode);
-          const builder = new xml2js.Builder({ attrkey: '@' });
-          const xml = builder.buildObject(result);
-          // console.log(xml);
-          fs.writeFileSync(outputPath, xml, err3 => {
-            if (err3) {
-              console.log(`Error writing xml ${inputPath}: ${err3.message}`);
-              reject(err3);
-            } else resolve();
-          });
-        }
-      } else {
-        console.log(`Error processing ${inputPath}: ${err.message}`);
-        reject(err);
-      }
-    });
-  });
-
-function renameFile(filename, mode) {
-  console.log(filename, mode);
-  switch (mode) {
-    case 'json2xml':
-      console.log(`${filename.replace('.json', '').replace('.JSON', '')}.xml`);
-      return `${filename.replace('.json', '').replace('.JSON', '')}.xml`;
-    case 'xml2json':
-      return `${filename.replace('.xml', '').replace('.XML', '')}.json`;
-
-    default:
-      // 'xml2json'
-      return `${filename.replace('.xml', '').replace('.XML', '')}.json`;
+const coordinateParser = coordinateString => {
+  let coordArr = coordinateString.split(' ');
+  coordArr = coordArr.filter(coord => coord.length > 0 && coord !== ' ');
+  const coordRes = [];
+  let coordinateIndex = 0;
+  for (let i = 0; i < coordArr.length - 1; i += 2) {
+    const x = parseFloat(coordArr[i]);
+    const y = parseFloat(coordArr[i + 1]);
+    coordRes.push({ coordinateIndex, x: { value: x }, y: { value: y } });
+    coordinateIndex += 1;
   }
-}
-const processDir = (inputPath, outputPath, mode) =>
-  new Promise((resolve, reject) => {
-    let processMode = mode;
-    const promises = [];
-    try {
-      const filenames = fs.readdirSync(inputPath);
-
-      if (!fs.existsSync(outputPath)) {
-        fs.mkdirSync(outputPath);
-      }
-      filenames.forEach(filename => {
-        if (fs.lstatSync(`${inputPath}/${filename}`).isDirectory()) {
-          promises.push(
-            processDir(`${inputPath}/${filename}`, `${outputPath}/${filename}`, processMode)
-          );
-        } else if (filename.toLowerCase().endsWith('xml')) {
-          if (processMode === 'first') {
-            console.log(
-              'No mode is given. Running in xml2json mode first as the first file met is xml'
-            );
-            processMode = 'xml2json';
-          }
-          if (processMode === 'xml2json')
-            promises.push(
-              processFile(
-                `${inputPath}/${filename}`,
-                `${outputPath}/${renameFile(filename, processMode)}`,
-                processMode
-              )
-            );
-        } else if (filename.toLowerCase().endsWith('json')) {
-          if (processMode === 'first') {
-            console.log(
-              'No mode is given. Running in json2xml mode first as the first file met is json'
-            );
-            processMode = 'json2xml';
-          }
-          if (processMode === 'json2xml')
-            promises.push(
-              processFile(
-                `${inputPath}/${filename}`,
-                `${outputPath}/${renameFile(filename, processMode)}`,
-                processMode
-              )
-            );
-        }
-      });
-
-      Promise.all(promises)
-        .then(() => {
-          try {
-            const files = fs.readdirSync(outputPath);
-            if (files.length === 0) fs.rmdirSync(outputPath);
-            resolve();
-          } catch (err) {
-            console.log(err);
-            reject(err);
-          }
-        })
-        .catch(err => {
-          reject(err);
-        });
-    } catch (err) {
-      console.log(err);
-      reject(err);
-    }
-    //
-  });
-
+  return coordRes;
+};
 const splineConverter = coordList => {
   // make a copy of the coordList
   const coords = [];
@@ -468,19 +307,179 @@ const splineConverter = coordList => {
   return res;
 };
 
-const coordinateParser = coordinateString => {
-  let coordArr = coordinateString.split(' ');
-  coordArr = coordArr.filter(coord => coord.length > 0 && coord !== ' ');
-  const coordRes = [];
-  let coordinateIndex = 0;
-  for (let i = 0; i < coordArr.length - 1; i += 2) {
-    const x = parseFloat(coordArr[i]);
-    const y = parseFloat(coordArr[i + 1]);
-    coordRes.push({ coordinateIndex, x: { value: x }, y: { value: y } });
-    coordinateIndex += 1;
+const processFile = (inputPath, outputPath, convertMode) =>
+  new Promise((resolve, reject) => {
+    let processMode = convertMode;
+    if (processMode === 'first') {
+      if (inputPath.toLowerCase().endsWith('json')) {
+        console.log('No mode is given. found json, converting to xml');
+        processMode = 'json2xml';
+      } else {
+        console.log('No mode is given. Trying to convert to json');
+        processMode = 'xml2json';
+      }
+    }
+    const parser = new xml2js.Parser({ attrkey: '', mergeAttrs: true, explicitArray: false });
+    fs.readFile(inputPath, (err, data) => {
+      if (!err) {
+        if (processMode === 'xml2json') {
+          parser.parseString(data, (err2, result) => {
+            if (!err2) {
+              let mode = 'aim';
+              if ('TemplateContainer' in result) mode = 'template';
+              walkObj(result, checkAndFix, mode);
+
+              if (mode !== 'template') {
+                const markupEntity = result.ImageAnnotationCollection.imageAnnotations
+                  .ImageAnnotation[0].markupEntityCollection
+                  ? result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
+                      .markupEntityCollection.MarkupEntity[0]
+                  : null;
+                const aimID = markupEntity ? markupEntity.uniqueIdentifier.root : null;
+                const isSpline = aimID ? aimID.includes('spline') : null;
+
+                if (isSpline) {
+                  const coordinates =
+                    markupEntity.twoDimensionSpatialCoordinateCollection
+                      .TwoDimensionSpatialCoordinate;
+
+                  const convertedCoordinates = splineConverter(coordinates);
+
+                  markupEntity.twoDimensionSpatialCoordinateCollection.TwoDimensionSpatialCoordinate = convertedCoordinates;
+                  markupEntity.uniqueIdentifier.root = markupEntity.uniqueIdentifier.root.replace(
+                    '###.spline.###',
+                    ''
+                  );
+
+                  const imgAnnotationStatements =
+                    result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
+                      .imageAnnotationStatementCollection.ImageAnnotationStatement;
+
+                  imgAnnotationStatements.forEach(statement => {
+                    // eslint-disable-next-line no-param-reassign
+                    statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
+                      '###.spline.###',
+                      ''
+                    );
+                  });
+                }
+              }
+
+              fs.writeFileSync(outputPath, JSON.stringify(result), err3 => {
+                if (err3) {
+                  console.log(`Error processing ${inputPath}: ${err3.message}`);
+                  reject(err3);
+                } else resolve();
+              });
+            } else {
+              console.log(`Error processing ${inputPath}: ${err2.message}`);
+              reject(err2);
+            }
+          });
+        } else if (processMode === 'json2xml') {
+          const result = JSON.parse(data);
+          let mode = 'aim';
+          if ('TemplateContainer' in result) mode = 'template';
+          walkObj(result, checkAndMarkAttr, mode);
+          const builder = new xml2js.Builder({ attrkey: '@' });
+          const xml = builder.buildObject(result);
+          // console.log(xml);
+          fs.writeFileSync(outputPath, xml, err3 => {
+            if (err3) {
+              console.log(`Error writing xml ${inputPath}: ${err3.message}`);
+              reject(err3);
+            } else resolve();
+          });
+        }
+      } else {
+        console.log(`Error processing ${inputPath}: ${err.message}`);
+        reject(err);
+      }
+    });
+  });
+
+function renameFile(filename, mode) {
+  console.log(filename, mode);
+  switch (mode) {
+    case 'json2xml':
+      console.log(`${filename.replace('.json', '').replace('.JSON', '')}.xml`);
+      return `${filename.replace('.json', '').replace('.JSON', '')}.xml`;
+    case 'xml2json':
+      return `${filename.replace('.xml', '').replace('.XML', '')}.json`;
+
+    default:
+      // 'xml2json'
+      return `${filename.replace('.xml', '').replace('.XML', '')}.json`;
   }
-  return coordRes;
-};
+}
+const processDir = (inputPath, outputPath, mode) =>
+  new Promise((resolve, reject) => {
+    let processMode = mode;
+    const promises = [];
+    try {
+      const filenames = fs.readdirSync(inputPath);
+
+      if (!fs.existsSync(outputPath)) {
+        fs.mkdirSync(outputPath);
+      }
+      filenames.forEach(filename => {
+        if (fs.lstatSync(`${inputPath}/${filename}`).isDirectory()) {
+          promises.push(
+            processDir(`${inputPath}/${filename}`, `${outputPath}/${filename}`, processMode)
+          );
+        } else if (filename.toLowerCase().endsWith('xml')) {
+          if (processMode === 'first') {
+            console.log(
+              'No mode is given. Running in xml2json mode first as the first file met is xml'
+            );
+            processMode = 'xml2json';
+          }
+          if (processMode === 'xml2json')
+            promises.push(
+              processFile(
+                `${inputPath}/${filename}`,
+                `${outputPath}/${renameFile(filename, processMode)}`,
+                processMode
+              )
+            );
+        } else if (filename.toLowerCase().endsWith('json')) {
+          if (processMode === 'first') {
+            console.log(
+              'No mode is given. Running in json2xml mode first as the first file met is json'
+            );
+            processMode = 'json2xml';
+          }
+          if (processMode === 'json2xml')
+            promises.push(
+              processFile(
+                `${inputPath}/${filename}`,
+                `${outputPath}/${renameFile(filename, processMode)}`,
+                processMode
+              )
+            );
+        }
+      });
+
+      Promise.all(promises)
+        .then(() => {
+          try {
+            const files = fs.readdirSync(outputPath);
+            if (files.length === 0) fs.rmdirSync(outputPath);
+            resolve();
+          } catch (err) {
+            console.log(err);
+            reject(err);
+          }
+        })
+        .catch(err => {
+          reject(err);
+        });
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+    //
+  });
 
 module.exports = () => {
   const args = process.argv.slice(2);
