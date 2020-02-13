@@ -438,8 +438,6 @@ const splineConverter = coordList => {
   // ai = yi
   // bi = ((ai+1 - ai) / hi) - (hi/3) (ci+1 + 2 ci)
 
-  // @SuppressWarnings("unused")
-  let tt = 0;
   let res = '';
   // for each interval
   for (let i = 1; i < nb - 2; i += 1) {
@@ -459,13 +457,11 @@ const splineConverter = coordList => {
     const p1x = aax;
     const p1y = aay;
     res += ` ${p1x} ${p1y}`;
-    tt += 1;
 
     for (let j = 1; j <= h[i]; j += 1) {
       const p2x = aax + bbx * j + ccx * (j * j) + ddx * (j * j * j);
       const p2y = aay + bby * j + ccy * (j * j) + ddy * (j * j * j);
       res += ` ${p2x} ${p2y}`;
-      tt += 1;
     } // endfor points in 1 interval
   } // endfor each interval
   res = coordinateParser(res);
