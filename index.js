@@ -351,17 +351,22 @@ const processFile = (inputPath, outputPath, convertMode) =>
                     ''
                   );
 
-                  const imgAnnotationStatements =
+                  if (
                     result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
-                      .imageAnnotationStatementCollection.ImageAnnotationStatement;
+                      .imageAnnotationStatementCollection
+                  ) {
+                    const imgAnnotationStatements =
+                      result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
+                        .imageAnnotationStatementCollection.ImageAnnotationStatement;
 
-                  imgAnnotationStatements.forEach(statement => {
-                    // eslint-disable-next-line no-param-reassign
-                    statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
-                      '###.spline.###',
-                      ''
-                    );
-                  });
+                    imgAnnotationStatements.forEach(statement => {
+                      // eslint-disable-next-line no-param-reassign
+                      statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
+                        '###.spline.###',
+                        ''
+                      );
+                    });
+                  }
                 }
               }
 
