@@ -369,13 +369,13 @@ const processFile = (inputPath, outputPath, convertMode) =>
                   }
                 }
               }
-
-              fs.writeFileSync(outputPath, JSON.stringify(result), err3 => {
-                if (err3) {
-                  console.log(`Error processing ${inputPath}: ${err3.message}`);
-                  reject(err3);
-                } else resolve();
-              });
+              try {
+                fs.writeFileSync(outputPath, JSON.stringify(result));
+                resolve();
+              } catch (err3) {
+                console.log(`Error processing ${inputPath}: ${err3.message}`);
+                reject(err3);
+              }
             } else {
               console.log(`Error processing ${inputPath}: ${err2.message}`);
               reject(err2);
@@ -389,12 +389,13 @@ const processFile = (inputPath, outputPath, convertMode) =>
           const builder = new xml2js.Builder({ attrkey: '@' });
           const xml = builder.buildObject(result);
           // console.log(xml);
-          fs.writeFileSync(outputPath, xml, err3 => {
-            if (err3) {
-              console.log(`Error writing xml ${inputPath}: ${err3.message}`);
-              reject(err3);
-            } else resolve();
-          });
+          try {
+            fs.writeFileSync(outputPath, xml);
+            resolve();
+          } catch (err3) {
+            console.log(`Error writing xml ${inputPath}: ${err3.message}`);
+            reject(err3);
+          }
         }
       } else {
         console.log(`Error processing ${inputPath}: ${err.message}`);
