@@ -307,6 +307,46 @@ const splineConverter = coordList => {
   return res;
 };
 
+// convert to local time and dicom format
+const dateConvert = (javagmt) => {
+  if (!javagmt.endsWith('GMT')) return javagmt;
+  const datetimeParts = javagmt.replace('.Zone:GMT', '').split('T');
+  // date
+  const dateParts = datetimeParts[0].split('.');
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  // time
+  const timeParts = datetimeParts[1].substring(0, 8).split(':');
+  if (datetimeParts[1].endsWith('PM')) {
+    timeParts[0] = parseInt(timeParts[0]) + 12;
+  }
+  var t = new Date(
+    `${dateParts[1]} ${months[parseInt(dateParts[0]) - 1]} ${dateParts[2]} ${timeParts.join(
+      ':'
+    )} GMT`
+  );
+  const date = ('0' + t.getDate()).slice(-2);
+  const month = ('0' + (t.getMonth() + 1)).slice(-2);
+  const year = t.getFullYear();
+  const hours = ('0' + t.getHours()).slice(-2);
+  const minutes = ('0' + t.getMinutes()).slice(-2);
+  const seconds = ('0' + t.getSeconds()).slice(-2);
+  return `${year}${month}${date}${hours}${minutes}${seconds}`;
+};
+
 const processFile = (inputPath, outputPath, convertMode) =>
   new Promise((resolve, reject) => {
     let processMode = convertMode;
@@ -330,6 +370,10 @@ const processFile = (inputPath, outputPath, convertMode) =>
               walkObj(result, checkAndFix, mode);
 
               if (mode !== 'template') {
+                result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0].dateTime.value = dateConvert(
+                  result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0].dateTime
+                    .value
+                );
                 const markupEntity = result.ImageAnnotationCollection.imageAnnotations
                   .ImageAnnotation[0].markupEntityCollection
                   ? result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
