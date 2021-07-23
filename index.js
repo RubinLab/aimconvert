@@ -1,5 +1,6 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
+const { default: PQueue } = require('p-queue');
 
 const what = Object.prototype.toString;
 const tagAndAttrLists = require('./tagAndAttrLists.json');
@@ -430,7 +431,7 @@ const processDir = (inputPath, outputPath, mode) =>
       }
       filenames.forEach(filename => {
         if (fs.lstatSync(`${inputPath}/${filename}`).isDirectory()) {
-          promises.push(
+          promises.push(() =>
             processDir(`${inputPath}/${filename}`, `${outputPath}/${filename}`, processMode)
           );
         } else if (filename.toLowerCase().endsWith('xml')) {
@@ -441,7 +442,7 @@ const processDir = (inputPath, outputPath, mode) =>
             processMode = 'xml2json';
           }
           if (processMode === 'xml2json')
-            promises.push(
+            promises.push(() =>
               processFile(
                 `${inputPath}/${filename}`,
                 `${outputPath}/${renameFile(filename, processMode)}`,
@@ -456,7 +457,7 @@ const processDir = (inputPath, outputPath, mode) =>
             processMode = 'json2xml';
           }
           if (processMode === 'json2xml')
-            promises.push(
+            promises.push(() =>
               processFile(
                 `${inputPath}/${filename}`,
                 `${outputPath}/${renameFile(filename, processMode)}`,
@@ -466,7 +467,7 @@ const processDir = (inputPath, outputPath, mode) =>
         }
       });
 
-      Promise.all(promises)
+      pq.addAll(promises)
         .then(() => {
           try {
             const files = fs.readdirSync(outputPath);
@@ -488,6 +489,7 @@ const processDir = (inputPath, outputPath, mode) =>
   });
 
 module.exports = () => {
+  const pq = new PQueue({ concurrency: 5 });
   const args = process.argv.slice(2);
   if (args.length === 3) {
     // mode input output
