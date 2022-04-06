@@ -489,7 +489,7 @@ const processDir = (inputPath, outputPath, mode) =>
   });
 
 module.exports = () => {
-  const pq = new PQueue({ concurrency: 5 });
+  const pq = new Queue(Infinity, 5);
   const args = process.argv.slice(2);
   if (args.length === 3) {
     // mode input output
