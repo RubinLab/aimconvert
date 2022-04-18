@@ -376,7 +376,6 @@ const processFile = (inputPath, outputPath, convertMode) =>
                 reject(err3);
               }
             } else {
-              console.log(`Error processing ${inputPath}: ${err2 ? err2.message : 'No result/Empty XML'}`);
               reject(err2 || new Error('No result/Empty XML'));
             }
           });
@@ -420,7 +419,6 @@ function renameFile(filename, mode) {
 const processDir = (inputPath, outputPath, mode) =>
   new Promise(async (resolve, reject) => {
     let processMode = mode;
-    const promises = [];
     try {
       const filenames = fs.readdirSync(inputPath);
 
@@ -439,11 +437,17 @@ const processDir = (inputPath, outputPath, mode) =>
             processMode = 'xml2json';
           }
           if (processMode === 'xml2json') {
-            await processFile(
-              `${inputPath}/${filename}`,
-              `${outputPath}/${renameFile(filename, processMode)}`,
-              processMode
-            );
+            try {
+              await processFile(
+                `${inputPath}/${filename}`,
+                `${outputPath}/${renameFile(filename, processMode)}`,
+                processMode
+              );
+            } catch (fileErr) {
+              console.log(
+                `Could not process file ${inputPath}/${filename}. Error: ${fileErr.message}`
+              );
+            }
           }
         } else if (filename.toLowerCase().endsWith('json')) {
           if (processMode === 'first') {
@@ -452,12 +456,19 @@ const processDir = (inputPath, outputPath, mode) =>
             );
             processMode = 'json2xml';
           }
-          if (processMode === 'json2xml')
-            await processFile(
-              `${inputPath}/${filename}`,
-              `${outputPath}/${renameFile(filename, processMode)}`,
-              processMode
-            );
+          if (processMode === 'json2xml') {
+            try {
+              await processFile(
+                `${inputPath}/${filename}`,
+                `${outputPath}/${renameFile(filename, processMode)}`,
+                processMode
+              );
+            } catch (fileErr) {
+              console.log(
+                `Could not process file ${inputPath}/${filename}. Error: ${fileErr.message}`
+              );
+            }
+          }
         }
       }
 
