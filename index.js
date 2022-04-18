@@ -376,8 +376,8 @@ const processFile = (inputPath, outputPath, convertMode) =>
                 reject(err3);
               }
             } else {
-              console.log(`Error processing ${inputPath}: ${err2 ? err2.message : 'no result'}`);
-              reject(err2);
+              console.log(`Error processing ${inputPath}: ${err2 ? err2.message : 'No result/Empty XML'}`);
+              reject(err2 || new Error('No result/Empty XML'));
             }
           });
         } else if (processMode === 'json2xml') {
@@ -453,12 +453,10 @@ const processDir = (inputPath, outputPath, mode) =>
             processMode = 'json2xml';
           }
           if (processMode === 'json2xml')
-            promises.push(
-              processFile(
-                `${inputPath}/${filename}`,
-                `${outputPath}/${renameFile(filename, processMode)}`,
-                processMode
-              )
+            await processFile(
+              `${inputPath}/${filename}`,
+              `${outputPath}/${renameFile(filename, processMode)}`,
+              processMode
             );
         }
       }
@@ -476,7 +474,6 @@ const processDir = (inputPath, outputPath, mode) =>
       console.log(err);
       reject(err);
     }
-    //
   });
 
 module.exports = async () => {
