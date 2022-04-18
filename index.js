@@ -7,7 +7,7 @@ const tagAndAttrLists = require('./tagAndAttrLists.json');
 function walkObj(obj, fn, mode) {
   const wo = what.call(obj);
   if (wo === '[object Object]') {
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       fn(obj, key, mode);
       const item = obj[key];
       const w = what.call(item);
@@ -19,7 +19,7 @@ function walkObj(obj, fn, mode) {
     obj.forEach((item, ix) => {
       fn(obj, ix, mode);
     });
-    obj.forEach(item => {
+    obj.forEach((item) => {
       const w = what.call(item);
       if (w === '[object Object]' || w === '[object Array]') {
         walkObj(item, fn, mode);
@@ -42,7 +42,7 @@ function checkAndFix(parent, key, mode) {
 
   if (w === '[object Object]') {
     const newObj = {};
-    Object.keys(value).forEach(k => {
+    Object.keys(value).forEach((k) => {
       // removing empty items (keep DontRemoveTags, ex. codeSystemVersion)
       if (value[k] !== '' || strDontRemoveTagListLocal.includes(k)) {
         if (
@@ -75,7 +75,7 @@ function checkAndMarkAttr(parent, key, mode) {
 
   if (w === '[object Object]') {
     const newObj = {};
-    Object.keys(value).forEach(k => {
+    Object.keys(value).forEach((k) => {
       // console.log(k)
       if (
         key !== '@' && // if not already an attribute
@@ -97,9 +97,9 @@ function checkAndMarkAttr(parent, key, mode) {
   }
 }
 
-const coordinateParser = coordinateString => {
+const coordinateParser = (coordinateString) => {
   let coordArr = coordinateString.split(' ');
-  coordArr = coordArr.filter(coord => coord.length > 0 && coord !== ' ');
+  coordArr = coordArr.filter((coord) => coord.length > 0 && coord !== ' ');
   const coordRes = [];
   let coordinateIndex = 0;
   for (let i = 0; i < coordArr.length - 1; i += 2) {
@@ -110,7 +110,7 @@ const coordinateParser = coordinateString => {
   }
   return coordRes;
 };
-const splineConverter = coordList => {
+const splineConverter = (coordList) => {
   // make a copy of the coordList
   const coords = [];
   for (let i = 0; i < coordList.length; i += 1) {
@@ -324,7 +324,7 @@ const processFile = (inputPath, outputPath, convertMode) =>
       if (!err) {
         if (processMode === 'xml2json') {
           parser.parseString(data, (err2, result) => {
-            if (!err2) {
+            if (!err2 && result) {
               let mode = 'aim';
               if ('TemplateContainer' in result) mode = 'template';
               walkObj(result, checkAndFix, mode);
@@ -345,7 +345,8 @@ const processFile = (inputPath, outputPath, convertMode) =>
 
                   const convertedCoordinates = splineConverter(coordinates);
 
-                  markupEntity.twoDimensionSpatialCoordinateCollection.TwoDimensionSpatialCoordinate = convertedCoordinates;
+                  markupEntity.twoDimensionSpatialCoordinateCollection.TwoDimensionSpatialCoordinate =
+                    convertedCoordinates;
                   markupEntity.uniqueIdentifier.root = markupEntity.uniqueIdentifier.root.replace(
                     '###.spline.###',
                     ''
@@ -359,12 +360,10 @@ const processFile = (inputPath, outputPath, convertMode) =>
                       result.ImageAnnotationCollection.imageAnnotations.ImageAnnotation[0]
                         .imageAnnotationStatementCollection.ImageAnnotationStatement;
 
-                    imgAnnotationStatements.forEach(statement => {
+                    imgAnnotationStatements.forEach((statement) => {
                       // eslint-disable-next-line no-param-reassign
-                      statement.objectUniqueIdentifier.root = statement.objectUniqueIdentifier.root.replace(
-                        '###.spline.###',
-                        ''
-                      );
+                      statement.objectUniqueIdentifier.root =
+                        statement.objectUniqueIdentifier.root.replace('###.spline.###', '');
                     });
                   }
                 }
@@ -377,7 +376,7 @@ const processFile = (inputPath, outputPath, convertMode) =>
                 reject(err3);
               }
             } else {
-              console.log(`Error processing ${inputPath}: ${err2.message}`);
+              console.log(`Error processing ${inputPath}: ${err2 ? err2.message : 'no result'}`);
               reject(err2);
             }
           });
@@ -419,7 +418,7 @@ function renameFile(filename, mode) {
   }
 }
 const processDir = (inputPath, outputPath, mode) =>
-  new Promise((resolve, reject) => {
+  new Promise(async (resolve, reject) => {
     let processMode = mode;
     const promises = [];
     try {
@@ -428,11 +427,10 @@ const processDir = (inputPath, outputPath, mode) =>
       if (!fs.existsSync(outputPath)) {
         fs.mkdirSync(outputPath);
       }
-      filenames.forEach(filename => {
+      for (let i = 0; i < filenames.length; i += 1) {
+        const filename = filenames[i];
         if (fs.lstatSync(`${inputPath}/${filename}`).isDirectory()) {
-          promises.push(
-            processDir(`${inputPath}/${filename}`, `${outputPath}/${filename}`, processMode)
-          );
+          await processDir(`${inputPath}/${filename}`, `${outputPath}/${filename}`, processMode);
         } else if (filename.toLowerCase().endsWith('xml')) {
           if (processMode === 'first') {
             console.log(
@@ -440,14 +438,13 @@ const processDir = (inputPath, outputPath, mode) =>
             );
             processMode = 'xml2json';
           }
-          if (processMode === 'xml2json')
-            promises.push(
-              processFile(
-                `${inputPath}/${filename}`,
-                `${outputPath}/${renameFile(filename, processMode)}`,
-                processMode
-              )
+          if (processMode === 'xml2json') {
+            await processFile(
+              `${inputPath}/${filename}`,
+              `${outputPath}/${renameFile(filename, processMode)}`,
+              processMode
             );
+          }
         } else if (filename.toLowerCase().endsWith('json')) {
           if (processMode === 'first') {
             console.log(
@@ -464,22 +461,17 @@ const processDir = (inputPath, outputPath, mode) =>
               )
             );
         }
-      });
+      }
 
-      Promise.all(promises)
-        .then(() => {
-          try {
-            const files = fs.readdirSync(outputPath);
-            if (files.length === 0) fs.rmdirSync(outputPath);
-            resolve();
-          } catch (err) {
-            console.log(err);
-            reject(err);
-          }
-        })
-        .catch(err => {
-          reject(err);
-        });
+      // delete the output dir if empty
+      try {
+        const files = fs.readdirSync(outputPath);
+        if (files.length === 0) fs.rmdirSync(outputPath);
+        resolve();
+      } catch (err) {
+        console.log(err);
+        reject(err);
+      }
     } catch (err) {
       console.log(err);
       reject(err);
@@ -487,7 +479,7 @@ const processDir = (inputPath, outputPath, mode) =>
     //
   });
 
-module.exports = () => {
+module.exports = async () => {
   const args = process.argv.slice(2);
   if (args.length === 3) {
     // mode input output
@@ -495,13 +487,13 @@ module.exports = () => {
       console.log('Unknown mode. Accepted modes are xml2json and json2xml');
       return;
     }
-    if (fs.lstatSync(args[1]).isDirectory()) processDir(args[1], args[2], args[0]);
-    else processFile(args[1], args[2], args[0]);
+    if (fs.lstatSync(args[1]).isDirectory()) await processDir(args[1], args[2], args[0]);
+    else await processFile(args[1], args[2], args[0]);
     console.log(`Done processing ${args[1]}`);
   } else if (args.length === 2) {
     // input output
-    if (fs.lstatSync(args[0]).isDirectory()) processDir(args[0], args[1], 'first');
-    else processFile(args[0], args[1], 'first');
+    if (fs.lstatSync(args[0]).isDirectory()) await processDir(args[0], args[1], 'first');
+    else await processFile(args[0], args[1], 'first');
     console.log(`Done processing ${args[0]}`);
   } else {
     console.log(
